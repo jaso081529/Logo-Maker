@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kreislogo Pro v5 (Canvas)</title>
+<style>
+:root{--ink:#0f172a;--bg:#f1f5f9;--card:#fff;--muted:#64748b;--acc:#2563eb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,#22c55e,#06b6d4)}
+.brand h1{margin:0;font-size:18px}.brand .sub{color:#334155}
+.app-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.projname{padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;min-width:220px}
+button{padding:10px 14px;border-radius:10px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer}
+button.ghost{background:#fff;color:#0f172a;border:1px solid #e2e8f0}
+button.danger{border-color:#ef4444;color:#ef4444;background:#fff}
+.layout{display:grid;grid-template-columns:420px 1fr;gap:16px;padding:16px}
+.panel{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden}
+.controls{padding:12px;display:flex;flex-direction:column;gap:12px}
+.card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.card h3{margin:0;font-size:14px}
+label{font-size:12px;color:#334155;display:flex;flex-direction:column;gap:6px}
+input,select{font:inherit;border:1px solid #e2e8f0;border-radius:10px;padding:10px;background:#fff}
+input[type="range"]{padding:0}
+.grid{display:grid;gap:8px}
+.grid.two{grid-template-columns:1fr 1fr}
+.preview{display:flex;flex-direction:column}
+.preview-toolbar{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e5e7eb;background:#fff}
+.preview-toolbar .left{display:flex;gap:8px;align-items:center}
+.chip{background:#e2e8f0;color:#0f172a;padding:6px 10px;border-radius:999px;border:1px solid #cbd5e1;font-size:12px}
+.stage-wrap{position:relative;display:flex;align-items:center;justify-content:center;padding:14px}
+canvas{width:100%;max-width:960px;height:auto;border-radius:12px;background:#fff;border:1px solid #e5e7eb}
+.preview-label{position:absolute;top:10px;right:18px;background:rgba(2,6,23,.85);color:#fff;padding:6px 10px;border-radius:8px;font-size:12px;pointer-events:none}
+.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;padding:2px 6px}
+@media (max-width:1080px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="brand"><span class="dot"></span><h1>Kreislogo&nbsp;<span class="sub">Pro v5</span></h1></div>
+  <div class="app-actions">
+    <input id="projectName" class="projname" value="Mein Kreislogo" placeholder="Projektname …">
+    <button id="btnSaveProject" class="ghost">Projekt speichern</button>
+    <input id="loadProjectFile" type="file" accept=".json" hidden>
+    <button id="btnLoadProject" class="ghost">Projekt laden</button>
+    <button id="btnReset" class="ghost danger">Zurücksetzen</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="panel controls">
+    <section class="card">
+      <h3>Texte</h3>
+      <label>Text 1 (oben)<input id="text1" value="STAMMTISCH – FINSTERBRUNNER – DUMMBABBLER"></label>
+      <label>Text 2 (unten)<input id="text2" value="KAISERSLAUTERN • EDITION 67"></label>
+      <label>Text 3 (optional)<input id="text3" placeholder="optional …"></label>
+      <div class="grid two">
+        <label>Radius T1<input id="r1" type="range" min="120" max="460" value="390"></label>
+        <label>Radius T2<input id="r2" type="range" min="120" max="460" value="390"></label>
+        <label>Radius T3<input id="r3" type="range" min="120" max="460" value="260"></label>
+        <label>Startwinkel<input id="startAngle" type="range" min="-180" max="180" value="16"></label>
+      </div>
+      <div class="grid two">
+        <label>Richtung T1<select id="dir1"><option value="cw">Uhrzeiger</option><option value="ccw">Gegen</option></select></label>
+        <label>Richtung T2<select id="dir2"><option value="ccw">Gegen</option><option value="cw">Uhrzeiger</option></select></label>
+      </div>
+      <label>Bogenspannung (°)<input id="sweep" type="range" min="90" max="360" value="360"></label>
+      <div class="grid two">
+        <label>Schriftgröße<input id="fontSize" type="range" min="20" max="180" value="92"></label>
+        <label>Buchstabenabstand (px)<input id="letterSpace" type="range" min="-20" max="40" value="2"></label>
+      </div>
+      <div class="grid two">
+        <label>Schriftfamilie
+          <select id="fontFamily">
+            <option>Inter, system-ui, -apple-system, Segoe UI, Roboto</option>
+            <option selected>Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif</option>
+            <option>'Trebuchet MS', Tahoma, sans-serif</option>
+            <option>Georgia, 'Times New Roman', serif</option>
+            <option>monospace</option>
+          </select>
+        </label>
+        <label>Schriftstärke
+          <select id="fontWeight"><option>400</option><option selected>800</option><option>900</option></select>
+        </label>
+      </div>
+      <div class="grid two">
+        <label>Farbe<input id="fillColor" type="color" value="#111827"></label>
+        <label>Konturfarbe<input id="strokeColor" type="color" value="#111827"></label>
+      </div>
+      <label>Konturbreite<input id="strokeWidth" type="range" min="0" max="12" value="0"></label>
+    </section>
+
+    <section class="card">
+      <h3>Ringe & Mitte</h3>
+      <div class="grid two">
+        <label>Außenring Breite<input id="outerW" type="range" min="0" max="100" value="36"></label>
+        <label>Außenring Farbe<input id="outerC" type="color" value="#111827"></label>
+        <label>Innenring Radius<input id="innerR" type="range" min="120" max="480" value="360"></label>
+        <label>Innenring Deckung<input id="innerO" type="range" min="0" max="100" value="35"></label>
+        <label>Kernring Radius<input id="coreR" type="range" min="100" max="480" value="220"></label>
+        <label>Kernring Deckung<input id="coreO" type="range" min="0" max="100" value="20"></label>
+      </div>
+      <div class="grid two">
+        <label>Mittel-Icon (PNG/JPG/SVG)<input id="centerFile" type="file" accept=".png,.jpg,.jpeg,.svg"></label>
+        <label>Größe Mitte<input id="centerSize" type="range" min="40" max="720" value="300"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Export & Druck</h3>
+      <div class="grid two">
+        <label>DPI<input id="dpi" type="number" min="72" max="1200" value="300"></label>
+        <label>Breite (px)<input id="pxSize" type="number" min="500" max="16000" value="4000"></label>
+      </div>
+      <div class="grid two">
+        <button id="btnPNG">PNG (transparent)</button>
+        <button id="btnSVG" class="ghost">SVG (Vektor-Texte)</button>
+      </div>
+    </section>
+  </aside>
+
+  <section class="panel preview">
+    <div class="preview-toolbar">
+      <div class="left">
+        <input id="previewLabel" placeholder="Vorschau-Label …">
+        <span class="chip" id="chipSize">4000 px • 300 DPI</span>
+      </div>
+      <div class="right">
+        <button id="topPNG" class="ghost">PNG</button>
+        <button id="topSVG" class="ghost">SVG</button>
+      </div>
+    </div>
+    <div class="stage-wrap">
+      <canvas id="stage" width="1000" height="1000"></canvas>
+      <div class="preview-label" id="previewLabelBox">Vorschau</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const E = {
+  text1:$('#text1'), text2:$('#text2'), text3:$('#text3'),
+  r1:$('#r1'), r2:$('#r2'), r3:$('#r3'),
+  startAngle:$('#startAngle'), sweep:$('#sweep'),
+  dir1:$('#dir1'), dir2:$('#dir2'),
+  fontSize:$('#fontSize'), letterSpace:$('#letterSpace'),
+  fontFamily:$('#fontFamily'), fontWeight:$('#fontWeight'),
+  fillColor:$('#fillColor'), strokeColor:$('#strokeColor'), strokeWidth:$('#strokeWidth'),
+  outerW:$('#outerW'), outerC:$('#outerC'),
+  innerR:$('#innerR'), innerO:$('#innerO'),
+  coreR:$('#coreR'), coreO:$('#coreO'),
+  centerFile:$('#centerFile'), centerSize:$('#centerSize'),
+  dpi:$('#dpi'), pxSize:$('#pxSize'),
+  previewLabel:$('#previewLabel'), chipSize:$('#chipSize'),
+  btnPNG:$('#btnPNG'), btnSVG:$('#btnSVG'), topPNG:$('#topPNG'), topSVG:$('#topSVG'),
+  btnSaveProject:$('#btnSaveProject'), btnLoadProject:$('#btnLoadProject'), loadProjectFile:$('#loadProjectFile'), projectName:$('#projectName'), btnReset:$('#btnReset'),
+};
+const canvas = $('#stage'); const ctx = canvas.getContext('2d');
+let centerImage = null;
+
+// Helpers
+function degToRad(d){return d*Math.PI/180}
+function setFont(){
+  ctx.font = `${E.fontWeight.value} ${E.fontSize.value}px ${E.fontFamily.value}`;
+  ctx.textBaseline = 'middle'; ctx.textAlign='center';
+}
+function measureTextWidth(text){
+  setFont(); return ctx.measureText(text).width;
+}
+function drawRing(r, color, width, alpha=1){
+  if(width<=0) return;
+  ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.arc(500,500,r,0,Math.PI*2); ctx.stroke(); ctx.restore();
+}
+function drawCenterImage(){
+  if(!centerImage) return;
+  const size = +E.centerSize.value; const x=500-size/2, y=500-size/2;
+  ctx.drawImage(centerImage, x, y, size, size);
+}
+
+// Circular text draw
+function drawCircularText(text, radius, startDeg, sweepDeg, clockwise, fill, stroke, sw, letterSpace){
+  if(!text) return;
+  setFont();
+  const chars = [...text];
+  // compute total arc length by measuring each glyph + spacing
+  const advances = chars.map(ch => ctx.measureText(ch).width + letterSpace);
+  const totalAdvance = advances.reduce((a,b)=>a+b,0);
+  const arcLen = Math.min(Math.abs(sweepDeg), 359.9) * Math.PI/180 * radius;
+  const scale = arcLen / totalAdvance;
+  const dir = clockwise ? 1 : -1;
+  const sweep = Math.min(Math.abs(sweepDeg), 359.9) * dir;
+  let angleStart = startDeg - (sweep/2);
+  let theta = degToRad(angleStart);
+  const arcPerUnit = (degToRad(Math.abs(sweep))/totalAdvance) * dir;
+  ctx.save();
+  ctx.translate(500,500);
+  for(let i=0;i<chars.length;i++){
+    const adv = advances[i] * scale;
+    const aMid = theta + arcPerUnit*adv/2;
+    const x = Math.cos(aMid)*radius;
+    const y = Math.sin(aMid)*radius;
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(aMid + (clockwise?Math.PI/2:-Math.PI/2));
+    if(sw>0){ ctx.lineWidth = sw; ctx.strokeStyle = stroke; ctx.strokeText(chars[i], 0,0); }
+    ctx.fillStyle = fill;
+    ctx.fillText(chars[i], 0,0);
+    ctx.restore();
+    theta += arcPerUnit*adv;
+  }
+  ctx.restore();
+}
+
+// Render
+function render(){
+  E.chipSize.textContent = `${E.pxSize.value} px • ${E.dpi.value} DPI`;
+  $('#previewLabelBox').textContent = E.previewLabel.value || 'Vorschau';
+  // clear
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // checker bg
+  const s=20; for(let y=0;y<1000;y+=s){for(let x=0;x<1000;x+=s){ctx.fillStyle=((x/s+y/s)%2)?'#e5e7eb':'#f3f4f6'; ctx.fillRect(x,y,s,s);}}
+  // rings
+  drawRing(450, E.outerC.value, +E.outerW.value, 1);
+  drawRing(+E.innerR.value, '#111827', 2, (+E.innerO.value)/100);
+  drawRing(+E.coreR.value, '#111827', 2, (+E.coreO.value)/100);
+  // texts
+  const start = +E.startAngle.value;
+  const sweep = +E.sweep.value;
+  const fs = +E.fontSize.value;
+  const ls = +E.letterSpace.value;
+  // scale text rendering for consistent thickness
+  ctx.save();
+  drawCircularText(E.text1.value.trim(), +E.r1.value, start, sweep, E.dir1.value==='cw', E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
+  drawCircularText(E.text2.value.trim(), +E.r2.value, start, sweep, E.dir2.value==='cw', E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
+  drawCircularText(E.text3.value.trim(), +E.r3.value, start, sweep, true, E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
+  ctx.restore();
+  drawCenterImage();
+}
+
+// Export PNG with DPI
+function u32(n){return new Uint8Array([(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]);}
+function crc32(buf){let c=0xffffffff;for(let n=0;n<buf.length;n++){c^=buf[n];for(let k=0;k<8;k++){c=(c>>>1) ^ (0xedb88320 & -(c & 1));}}return (c^0xffffffff)>>>0;}
+async function exportPNG(){
+  const px = +E.pxSize.value || 4000;
+  const tmp = document.createElement('canvas'); tmp.width=px; tmp.height=px;
+  const tctx = tmp.getContext('2d'); tctx.imageSmoothingQuality='high';
+  // draw checker transparent by clearing
+  tctx.clearRect(0,0,px,px);
+  // draw current canvas into tmp scaled
+  tctx.drawImage(canvas, 0,0,px,px);
+  const blob = await new Promise(res=>tmp.toBlob(res,'image/png'));
+  const ab=await blob.arrayBuffer(); const u8=new Uint8Array(ab);
+  let insertPos=8; // after IHDR
+  let pos=8;
+  while(pos<u8.length){
+    const len=(u8[pos]<<24)|(u8[pos+1]<<16)|(u8[pos+2]<<8)|(u8[pos+3]);
+    const type=String.fromCharCode(u8[pos+4],u8[pos+5],u8[pos+6],u8[pos+7]);
+    const end=pos+12+len;
+    if(type==='IHDR'){insertPos=end;break;}
+    pos=end;
+  }
+  const dpi=+E.dpi.value; const ppm=Math.round(dpi/0.0254);
+  const data=new Uint8Array(9); data.set(u32(ppm),0); data.set(u32(ppm),4); data[8]=1;
+  const typeBytes=new TextEncoder().encode('pHYs'); const crc=u32(crc32(new Uint8Array([...typeBytes,...data]))); const len=u32(9);
+  const chunk=new Uint8Array([...len,...typeBytes,...data,...crc]);
+  const out=new Uint8Array(u8.length+chunk.length);
+  out.set(u8.slice(0,insertPos),0); out.set(chunk,insertPos); out.set(u8.slice(insertPos),insertPos+chunk.length);
+  const finalBlob=new Blob([out],{type:'image/png'});
+  const url=URL.createObjectURL(finalBlob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.png'; a.click(); URL.revokeObjectURL(url);
+}
+
+// Export SVG (as vector text on paths)
+function exportSVG(){
+  // Build a simple SVG with three arcs + textPath. Use 359.9° to avoid Safari bug.
+  const start=+E.startAngle.value; const sweep=Math.min(+E.sweep.value,359.9);
+  function pathArc(r, startDeg, sweepDeg, cw){
+    const dir = cw?1:-1; const s=degToRad(startDeg), e=degToRad(startDeg + dir*sweepDeg);
+    const sx = 500 + Math.cos(s)*r, sy=500 + Math.sin(s)*r;
+    const ex = 500 + Math.cos(e)*r, ey=500 + Math.sin(e)*r;
+    const large = sweepDeg>180?1:0; const sf=cw?1:0;
+    return `M ${sx} ${sy} A ${r} ${r} 0 ${large} ${sf} ${ex} ${ey}`;
+  }
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const textStyle = `font-family:${E.fontFamily.value};font-size:${E.fontSize.value}px;font-weight:${E.fontWeight.value};fill:${E.fillColor.value};stroke:${E.strokeColor.value};stroke-width:${E.strokeWidth.value}`;
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="340mm" height="340mm" viewBox="0 0 1000 1000">
+<defs>
+<path id="p1" d="${pathArc(+E.r1.value, start - sweep/2, sweep, E.dir1.value==='cw')}" />
+<path id="p2" d="${pathArc(+E.r2.value, start - sweep/2, sweep, E.dir2.value==='cw')}" />
+<path id="p3" d="${pathArc(+E.r3.value, start - sweep/2, sweep, true)}" />
+</defs>
+<g id="rings">
+<circle cx="500" cy="500" r="450" fill="none" stroke="${E.outerC.value}" stroke-width="${E.outerW.value}"/>
+<circle cx="500" cy="500" r="${E.innerR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.innerO.value)/100}" stroke-width="2"/>
+<circle cx="500" cy="500" r="${E.coreR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.coreO.value)/100}" stroke-width="2"/>
+</g>
+<g id="txt" style="${textStyle}">
+<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p1" startOffset="50%">${esc(E.text1.value)}</textPath></text>
+<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p2" startOffset="50%">${esc(E.text2.value)}</textPath></text>
+<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p3" startOffset="50%">${esc(E.text3.value||'')}</textPath></text>
+</g>
+</svg>`;
+  const blob=new Blob([svg],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.svg'; a.click(); URL.revokeObjectURL(url);
+}
+
+// Files, project, events
+E.centerFile.addEventListener('change', async e=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  const url = URL.createObjectURL(f);
+  const img = new Image(); img.onload=()=>{centerImage=img; render();}; img.src = url;
+});
+['input','change','keyup'].forEach(ev=>document.addEventListener(ev, e=>{ if(e.target && e.target.id) render(); }, {passive:true}));
+E.btnPNG.addEventListener('click', exportPNG); E.topPNG.addEventListener('click', exportPNG);
+E.btnSVG.addEventListener('click', exportSVG); E.topSVG.addEventListener('click', exportSVG);
+E.btnSaveProject.addEventListener('click',()=>{
+  const data = {
+    meta:{name:E.projectName.value, ver:'v5'},
+    texts:[E.text1.value, E.text2.value, E.text3.value],
+    radii:[+E.r1.value, +E.r2.value, +E.r3.value],
+    dirs:[E.dir1.value, E.dir2.value],
+    start:+E.startAngle.value, sweep:+E.sweep.value,
+    font:{family:E.fontFamily.value, weight:E.fontWeight.value, size:+E.fontSize.value, space:+E.letterSpace.value, fill:E.fillColor.value, stroke:E.strokeColor.value, sw:+E.strokeWidth.value},
+    rings:{outerW:+E.outerW.value, outerC:E.outerC.value, innerR:+E.innerR.value, innerO:+E.innerO.value, coreR:+E.coreR.value, coreO:+E.coreO.value},
+    center:{size:+E.centerSize.value}
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.project.json'; a.click(); URL.revokeObjectURL(url);
+});
+E.btnLoadProject.addEventListener('click',()=>E.loadProjectFile.click());
+E.loadProjectFile.addEventListener('change', async e=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  try{ const p=JSON.parse(await f.text());
+    [E.text1.value,E.text2.value,E.text3.value]=p.texts||['','',''];
+    [E.r1.value,E.r2.value,E.r3.value]=p.radii||[390,390,260];
+    E.dir1.value=(p.dirs&&p.dirs[0])||'cw'; E.dir2.value=(p.dirs&&p.dirs[1])||'ccw';
+    E.startAngle.value=p.start??16; E.sweep.value=p.sweep??360;
+    if(p.font){E.fontFamily.value=p.font.family||E.fontFamily.value;E.fontWeight.value=p.font.weight||E.fontWeight.value;E.fontSize.value=p.font.size||E.fontSize.value;E.letterSpace.value=p.font.space||E.letterSpace.value;E.fillColor.value=p.font.fill||E.fillColor.value;E.strokeColor.value=p.font.stroke||E.strokeColor.value;E.strokeWidth.value=p.font.sw||E.strokeWidth.value;}
+    if(p.rings){E.outerW.value=p.rings.outerW||E.outerW.value;E.outerC.value=p.rings.outerC||E.outerC.value;E.innerR.value=p.rings.innerR||E.innerR.value;E.innerO.value=p.rings.innerO||E.innerO.value;E.coreR.value=p.rings.coreR||E.coreR.value;E.coreO.value=p.rings.coreO||E.coreO.value;}
+    if(p.center){E.centerSize.value=p.center.size||E.centerSize.value;}
+    render();
+  }catch(err){ alert('Projekt konnte nicht geladen werden.'); }
+});
+E.btnReset.addEventListener('click',()=>location.reload());
+
+// initial
+render();
+</script>
+</body>
+</html>
