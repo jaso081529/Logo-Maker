@@ -3,22 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kreislogo Pro v5.1 (Canvas)</title>
+<title>Kreislogo Pro v5.2 (Canvas, Pro Controls)</title>
 <style>
 :root{--ink:#0f172a;--bg:#f1f5f9;--card:#fff;--muted:#64748b;--acc:#2563eb}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
 .appbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:8px}
-.brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,#22c55e,#06b6d4)}
-.brand h1{margin:0;font-size:18px}.brand .sub{color:#334155}
+.brand{display:flex;align-items:center;gap:8px}.brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,#22c55e,#06b6d4)}.brand h1{margin:0;font-size:18px}.brand .sub{color:#334155}
 .app-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .projname{padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;min-width:220px}
 button{padding:10px 14px;border-radius:10px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer}
 button.ghost{background:#fff;color:#0f172a;border:1px solid #e2e8f0}
 button.danger{border-color:#ef4444;color:#ef4444;background:#fff}
-
-.layout{display:grid;grid-template-columns:420px 1fr;gap:16px;padding:16px;min-height:calc(100vh - 120px)}
+.layout{display:grid;grid-template-columns:480px 1fr;gap:16px;padding:16px;min-height:calc(100vh - 120px)}
 .panel{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden}
 .controls{padding:12px;display:flex;flex-direction:column;gap:12px}
 .card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -28,26 +25,26 @@ input,select{font:inherit;border:1px solid #e2e8f0;border-radius:10px;padding:10
 input[type="range"]{padding:0}
 .grid{display:grid;gap:8px}
 .grid.two{grid-template-columns:1fr 1fr}
-
+.grid.three{grid-template-columns:1fr 1fr 1fr}
+hr.sep{border:none;border-top:1px solid #e5e7eb;margin:8px 0}
+details.adv{border:1px dashed #e5e7eb;border-radius:10px;padding:8px}
+details summary{cursor:pointer;font-weight:700;color:#0f172a}
 .preview{display:flex;flex-direction:column}
 .preview-toolbar{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e5e7eb;background:#fff}
 .preview-toolbar .left{display:flex;gap:8px;align-items:center}
 .chip{background:#e2e8f0;color:#0f172a;padding:6px 10px;border-radius:999px;border:1px solid #cbd5e1;font-size:12px}
-
 .stage-wrap{position:relative;display:flex;align-items:center;justify-content:center;padding:14px}
 .canvas-frame{position:relative;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;background:#fff}
 canvas{display:block;width:100%;max-width:960px;height:auto}
-
 .preview-label{position:absolute;background:rgba(2,6,23,.85);color:#fff;padding:6px 10px;border-radius:8px;font-size:12px;pointer-events:none}
 .pos-tr{top:10px;right:18px}.pos-tl{top:10px;left:18px}.pos-br{bottom:10px;right:18px}.pos-bl{bottom:10px;left:18px}
-.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;padding:2px 6px}
-
-@media (max-width:1080px){.layout{grid-template-columns:1fr}}
+small.hint{color:#64748b}
+@media (max-width:1140px){.layout{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header class="appbar">
-  <div class="brand"><span class="dot"></span><h1>Kreislogo&nbsp;<span class="sub">Pro v5.1</span></h1></div>
+  <div class="brand"><span class="dot"></span><h1>Kreislogo&nbsp;<span class="sub">Pro v5.2</span></h1></div>
   <div class="app-actions">
     <input id="projectName" class="projname" value="Mein Kreislogo" placeholder="Projektname …">
     <button id="btnSaveProject" class="ghost">Projekt speichern</button>
@@ -60,73 +57,122 @@ canvas{display:block;width:100%;max-width:960px;height:auto}
 <main class="layout">
   <aside class="panel controls">
     <section class="card">
-      <h3>Texte</h3>
+      <h3>Texte (Basis)</h3>
       <label>Text 1 (oben)<input id="text1" value="STAMMTISCH – FINSTERBRUNNER – DUMMBABBLER"></label>
       <label>Text 2 (unten)<input id="text2" value="KAISERSLAUTERN • EDITION 67"></label>
       <label>Text 3 (optional)<input id="text3" placeholder="optional …"></label>
+
       <div class="grid two">
-        <label>Radius T1<input id="r1" type="range" min="120" max="460" value="390"></label>
-        <label>Radius T2<input id="r2" type="range" min="120" max="460" value="390"></label>
-        <label>Radius T3<input id="r3" type="range" min="120" max="460" value="260"></label>
-        <label>Startwinkel<input id="startAngle" type="range" min="-180" max="180" value="16"></label>
+        <label>Startwinkel (°)<input id="startAngle" type="range" min="-180" max="180" value="12"></label>
+        <label>Spannung (°)<input id="sweep" type="range" min="60" max="360" value="360"></label>
       </div>
-      <div class="grid two">
+      <div class="grid three">
+        <label>Radius T1<input id="r1" type="range" min="100" max="470" value="390"></label>
+        <label>Radius T2<input id="r2" type="range" min="100" max="470" value="390"></label>
+        <label>Radius T3<input id="r3" type="range" min="80" max="470" value="260"></label>
+      </div>
+      <div class="grid three">
         <label>Richtung T1<select id="dir1"><option value="cw">Uhrzeiger</option><option value="ccw">Gegen</option></select></label>
         <label>Richtung T2<select id="dir2"><option value="ccw">Gegen</option><option value="cw">Uhrzeiger</option></select></label>
+        <label><small class="hint">T3 nutzt Uhrzeiger</small></label>
       </div>
-      <label>Bogenspannung (°)<input id="sweep" type="range" min="90" max="360" value="360"></label>
-      <div class="grid two">
-        <label>Schriftgröße<input id="fontSize" type="range" min="20" max="180" value="92"></label>
-        <label>Buchstabenabstand (px)<input id="letterSpace" type="range" min="-20" max="40" value="2"></label>
-      </div>
-      <div class="grid two">
-        <label>Schriftfamilie
-          <select id="fontFamily">
-            <option>Inter, system-ui, -apple-system, Segoe UI, Roboto</option>
-            <option selected>Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif</option>
-            <option>'Trebuchet MS', Tahoma, sans-serif</option>
-            <option>Georgia, 'Times New Roman', serif</option>
-            <option>monospace</option>
-          </select>
-        </label>
-        <label>Schriftstärke
-          <select id="fontWeight"><option>400</option><option selected>800</option><option>900</option></select>
-        </label>
-      </div>
-      <div class="grid two">
-        <label>Farbe<input id="fillColor" type="color" value="#111827"></label>
-        <label>Konturfarbe<input id="strokeColor" type="color" value="#111827"></label>
-      </div>
-      <label>Konturbreite<input id="strokeWidth" type="range" min="0" max="12" value="0"></label>
-    </section>
 
-    <section class="card">
-      <h3>Vorschau & Overlay</h3>
-      <div class="grid two">
-        <label><input id="showChecker" type="checkbox" checked> Schachbrett anzeigen</label>
-        <label><input id="showLabel" type="checkbox" checked> Overlay‑Label anzeigen</label>
-      </div>
-      <label>Overlay Position
-        <select id="labelPos">
-          <option value="tr" selected>oben rechts</option>
-          <option value="tl">oben links</option>
-          <option value="br">unten rechts</option>
-          <option value="bl">unten links</option>
-        </select>
-      </label>
-      <label>Vorschau‑Label Text
-        <input id="previewLabel" placeholder="Vorschau-Label …">
-      </label>
+      <hr class="sep">
+      <details class="adv" open>
+        <summary>Text 1 – Erweitert</summary>
+        <div class="grid three">
+          <label>Größe<input id="t1_fs" type="range" min="16" max="220" value="92"></label>
+          <label>Gewicht<select id="t1_fw"><option>400</option><option selected>800</option><option>900</option></select></label>
+          <label>Familie<select id="t1_ff"><option>Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif</option><option>Inter, system-ui, -apple-system, Segoe UI, Roboto</option><option>'Trebuchet MS', Tahoma, sans-serif</option><option>Georgia, 'Times New Roman', serif</option><option>monospace</option></select></label>
+        </div>
+        <div class="grid three">
+          <label>Farbe<input id="t1_fill" type="color" value="#111827"></label>
+          <label>Konturfarbe<input id="t1_stroke" type="color" value="#111827"></label>
+          <label>Konturbreite<input id="t1_sw" type="range" min="0" max="14" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Tracking (px)<input id="t1_ls" type="range" min="-120" max="80" value="2"></label>
+          <label>Word‑Space (px)<input id="t1_ws" type="range" min="-40" max="120" value="0"></label>
+          <label>Offset (°)<input id="t1_off" type="range" min="-180" max="180" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Scale X<input id="t1_sx" type="range" min="60" max="180" value="100"></label>
+          <label>Schräg (°)<input id="t1_skew" type="range" min="-30" max="30" value="0"></label>
+          <label><input id="t1_upright" type="checkbox" checked> Aufrecht halten</label>
+        </div>
+        <div class="grid two">
+          <label>Arc‑Fit<select id="t1_fit"><option value="fit" selected>an Spannungsbogen anpassen</option><option value="free">freie Länge</option></select></label>
+          <label>Groß/Klein<select id="t1_case"><option value="keep">Original</option><option value="upper">GROß</option><option value="lower">klein</option></select></label>
+        </div>
+      </details>
+
+      <details class="adv">
+        <summary>Text 2 – Erweitert</summary>
+        <div class="grid three">
+          <label>Größe<input id="t2_fs" type="range" min="16" max="220" value="92"></label>
+          <label>Gewicht<select id="t2_fw"><option>400</option><option selected>800</option><option>900</option></select></label>
+          <label>Familie<select id="t2_ff"><option>Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif</option><option>Inter, system-ui, -apple-system, Segoe UI, Roboto</option><option>'Trebuchet MS', Tahoma, sans-serif</option><option>Georgia, 'Times New Roman', serif</option><option>monospace</option></select></label>
+        </div>
+        <div class="grid three">
+          <label>Farbe<input id="t2_fill" type="color" value="#111827"></label>
+          <label>Konturfarbe<input id="t2_stroke" type="color" value="#111827"></label>
+          <label>Konturbreite<input id="t2_sw" type="range" min="0" max="14" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Tracking (px)<input id="t2_ls" type="range" min="-120" max="80" value="2"></label>
+          <label>Word‑Space (px)<input id="t2_ws" type="range" min="-40" max="120" value="0"></label>
+          <label>Offset (°)<input id="t2_off" type="range" min="-180" max="180" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Scale X<input id="t2_sx" type="range" min="60" max="180" value="100"></label>
+          <label>Schräg (°)<input id="t2_skew" type="range" min="-30" max="30" value="0"></label>
+          <label><input id="t2_upright" type="checkbox" checked> Aufrecht halten</label>
+        </div>
+        <div class="grid two">
+          <label>Arc‑Fit<select id="t2_fit"><option value="fit" selected>an Spannungsbogen anpassen</option><option value="free">freie Länge</option></select></label>
+          <label>Groß/Klein<select id="t2_case"><option value="keep">Original</option><option value="upper">GROß</option><option value="lower">klein</option></select></label>
+        </div>
+      </details>
+
+      <details class="adv">
+        <summary>Text 3 – Erweitert</summary>
+        <div class="grid three">
+          <label>Größe<input id="t3_fs" type="range" min="16" max="220" value="72"></label>
+          <label>Gewicht<select id="t3_fw"><option>400</option><option selected>800</option><option>900</option></select></label>
+          <label>Familie<select id="t3_ff"><option>Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif</option><option>Inter, system-ui, -apple-system, Segoe UI, Roboto</option><option>'Trebuchet MS', Tahoma, sans-serif</option><option>Georgia, 'Times New Roman', serif</option><option>monospace</option></select></label>
+        </div>
+        <div class="grid three">
+          <label>Farbe<input id="t3_fill" type="color" value="#111827"></label>
+          <label>Konturfarbe<input id="t3_stroke" type="color" value="#111827"></label>
+          <label>Konturbreite<input id="t3_sw" type="range" min="0" max="14" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Tracking (px)<input id="t3_ls" type="range" min="-120" max="80" value="2"></label>
+          <label>Word‑Space (px)<input id="t3_ws" type="range" min="-40" max="120" value="0"></label>
+          <label>Offset (°)<input id="t3_off" type="range" min="-180" max="180" value="0"></label>
+        </div>
+        <div class="grid three">
+          <label>Scale X<input id="t3_sx" type="range" min="60" max="180" value="100"></label>
+          <label>Schräg (°)<input id="t3_skew" type="range" min="-30" max="30" value="0"></label>
+          <label><input id="t3_upright" type="checkbox" checked> Aufrecht halten</label>
+        </div>
+        <div class="grid two">
+          <label>Arc‑Fit<select id="t3_fit"><option value="fit" selected>an Spannungsbogen anpassen</option><option value="free">freie Länge</option></select></label>
+          <label>Groß/Klein<select id="t3_case"><option value="keep">Original</option><option value="upper">GROß</option><option value="lower">klein</option></select></label>
+        </div>
+      </details>
     </section>
 
     <section class="card">
       <h3>Ringe & Mitte</h3>
-      <div class="grid two">
+      <div class="grid three">
         <label>Außenring Breite<input id="outerW" type="range" min="0" max="100" value="36"></label>
         <label>Außenring Farbe<input id="outerC" type="color" value="#111827"></label>
-        <label>Innenring Radius<input id="innerR" type="range" min="120" max="480" value="360"></label>
+        <label>Innenring Radius<input id="innerR" type="range" min="80" max="480" value="360"></label>
+      </div>
+      <div class="grid three">
         <label>Innenring Deckung<input id="innerO" type="range" min="0" max="100" value="35"></label>
-        <label>Kernring Radius<input id="coreR" type="range" min="100" max="480" value="220"></label>
+        <label>Kernring Radius<input id="coreR" type="range" min="80" max="480" value="220"></label>
         <label>Kernring Deckung<input id="coreO" type="range" min="0" max="100" value="20"></label>
       </div>
       <div class="grid two">
@@ -136,27 +182,43 @@ canvas{display:block;width:100%;max-width:960px;height:auto}
     </section>
 
     <section class="card">
+      <h3>Vorschau & Overlay</h3>
+      <div class="grid three">
+        <label><input id="showChecker" type="checkbox" checked> Schachbrett</label>
+        <label><input id="showLabel" type="checkbox" checked> Overlay‑Label</label>
+        <label>Label‑Pos<select id="labelPos"><option value="tr" selected>oben rechts</option><option value="tl">oben links</option><option value="br">unten rechts</option><option value="bl">unten links</option></select></label>
+      </div>
+      <label>Label‑Text<input id="previewLabel" placeholder="Vorschau-Label …"></label>
+      <div class="grid two">
+        <label>Kontur‑Join<select id="strokeJoin"><option>round</option><option selected>miter</option><option>bevel</option></select></label>
+        <label>Miter‑Limit<input id="miterLimit" type="range" min="1" max="20" value="4"></label>
+      </div>
+      <div class="grid two">
+        <label>Gamma<input id="adj_gamma" type="range" min="0.5" max="2.5" step="0.01" value="1.0"></label>
+        <label>Sättigung<input id="adj_sat" type="range" min="0" max="2" step="0.01" value="1.0"></label>
+        <label>Kontrast<input id="adj_con" type="range" min="0.5" max="2.0" step="0.01" value="1.0"></label>
+        <label>Helligkeit<input id="adj_bri" type="range" min="0.5" max="1.5" step="0.01" value="1.0"></label>
+      </div>
+      <label><input id="previewAdjust" type="checkbox"> Farbkorrektur live in der Vorschau anwenden</label>
+    </section>
+
+    <section class="card">
       <h3>Export & Druck</h3>
       <div class="grid two">
         <label>DPI<input id="dpi" type="number" min="72" max="1200" value="300"></label>
         <label>Breite (px)<input id="pxSize" type="number" min="500" max="16000" value="4000"></label>
       </div>
       <div class="grid two">
-        <button id="btnPNG">PNG (transparent)</button>
-        <button id="btnSVG" class="ghost">SVG (Vektor-Texte)</button>
+        <button id="btnPNG">PNG (transparent, DPI)</button>
+        <button id="btnSVG" class="ghost">SVG (Vektor‑Texte)</button>
       </div>
     </section>
   </aside>
 
   <section class="panel preview">
     <div class="preview-toolbar">
-      <div class="left">
-        <span class="chip" id="chipSize">4000 px • 300 DPI</span>
-      </div>
-      <div class="right">
-        <button id="topPNG" class="ghost">PNG</button>
-        <button id="topSVG" class="ghost">SVG</button>
-      </div>
+      <div class="left"><span class="chip" id="chipSize">4000 px • 300 DPI</span></div>
+      <div class="right"><button id="topPNG" class="ghost">PNG</button><button id="topSVG" class="ghost">SVG</button></div>
     </div>
     <div class="stage-wrap">
       <div class="canvas-frame" id="frame">
@@ -168,133 +230,208 @@ canvas{display:block;width:100%;max-width:960px;height:auto}
 </main>
 
 <script>
-const $ = s => document.querySelector(s);
-const E = {
-  text1:$('#text1'), text2:$('#text2'), text3:$('#text3'),
-  r1:$('#r1'), r2:$('#r2'), r3:$('#r3'),
-  startAngle:$('#startAngle'), sweep:$('#sweep'),
-  dir1:$('#dir1'), dir2:$('#dir2'),
-  fontSize:$('#fontSize'), letterSpace:$('#letterSpace'),
-  fontFamily:$('#fontFamily'), fontWeight:$('#fontWeight'),
-  fillColor:$('#fillColor'), strokeColor:$('#strokeColor'), strokeWidth:$('#strokeWidth'),
-  outerW:$('#outerW'), outerC:$('#outerC'),
-  innerR:$('#innerR'), innerO:$('#innerO'),
-  coreR:$('#coreR'), coreO:$('#coreO'),
-  centerFile:$('#centerFile'), centerSize:$('#centerSize'),
-  dpi:$('#dpi'), pxSize:$('#pxSize'),
-  showChecker:$('#showChecker'), showLabel:$('#showLabel'), labelPos:$('#labelPos'),
-  previewLabel:$('#previewLabel'), chipSize:$('#chipSize'),
-  btnPNG:$('#btnPNG'), btnSVG:$('#btnSVG'), topPNG:$('#topPNG'), topSVG:$('#topSVG'),
-  btnSaveProject:$('#btnSaveProject'), btnLoadProject:$('#btnLoadProject'), loadProjectFile:$('#loadProjectFile'), projectName:$('#projectName'), btnReset:$('#btnReset'),
-  previewLabelBox:$('#previewLabelBox'), frame:$('#frame')
-};
-const canvas = $('#stage'); const ctx = canvas.getContext('2d');
-let centerImage = null;
-
-// Helpers
+const $=s=>document.querySelector(s);
+const E={text1:$('#text1'),text2:$('#text2'),text3:$('#text3'),r1:$('#r1'),r2:$('#r2'),r3:$('#r3'),startAngle:$('#startAngle'),sweep:$('#sweep'),dir1:$('#dir1'),dir2:$('#dir2'),
+t1_fs:$('#t1_fs'),t1_fw:$('#t1_fw'),t1_ff:$('#t1_ff'),t1_fill:$('#t1_fill'),t1_stroke:$('#t1_stroke'),t1_sw:$('#t1_sw'),t1_ls:$('#t1_ls'),t1_ws:$('#t1_ws'),t1_off:$('#t1_off'),t1_sx:$('#t1_sx'),t1_skew:$('#t1_skew'),t1_upright:$('#t1_upright'),t1_fit:$('#t1_fit'),t1_case:$('#t1_case'),
+t2_fs:$('#t2_fs'),t2_fw:$('#t2_fw'),t2_ff:$('#t2_ff'),t2_fill:$('#t2_fill'),t2_stroke:$('#t2_stroke'),t2_sw:$('#t2_sw'),t2_ls:$('#t2_ls'),t2_ws:$('#t2_ws'),t2_off:$('#t2_off'),t2_sx:$('#t2_sx'),t2_skew:$('#t2_skew'),t2_upright:$('#t2_upright'),t2_fit:$('#t2_fit'),t2_case:$('#t2_case'),
+t3_fs:$('#t3_fs'),t3_fw:$('#t3_fw'),t3_ff:$('#t3_ff'),t3_fill:$('#t3_fill'),t3_stroke:$('#t3_stroke'),t3_sw:$('#t3_sw'),t3_ls:$('#t3_ls'),t3_ws:$('#t3_ws'),t3_off:$('#t3_off'),t3_sx:$('#t3_sx'),t3_skew:$('#t3_skew'),t3_upright:$('#t3_upright'),t3_fit:$('#t3_fit'),t3_case:$('#t3_case'),
+outerW:$('#outerW'),outerC:$('#outerC'),innerR:$('#innerR'),innerO:$('#innerO'),coreR:$('#coreR'),coreO:$('#coreO'),centerFile:$('#centerFile'),centerSize:$('#centerSize'),
+showChecker:$('#showChecker'),showLabel:$('#showLabel'),labelPos:$('#labelPos'),previewLabel:$('#previewLabel'),strokeJoin:$('#strokeJoin'),miterLimit:$('#miterLimit'),
+adj_gamma:$('#adj_gamma'),adj_sat:$('#adj_sat'),adj_con:$('#adj_con'),adj_bri:$('#adj_bri'),previewAdjust:$('#previewAdjust'),
+dpi:$('#dpi'),pxSize:$('#pxSize'),chipSize:$('#chipSize'),
+btnPNG:$('#btnPNG'),btnSVG:$('#btnSVG'),topPNG:$('#topPNG'),topSVG:$('#topSVG'),
+btnSaveProject:$('#btnSaveProject'),btnLoadProject:$('#btnLoadProject'),loadProjectFile:$('#loadProjectFile'),projectName:$('#projectName'),btnReset:$('#btnReset'),
+canvas:$('#stage'),frame:$('#frame'),previewLabelBox:$('#previewLabelBox')};
+const ctx=E.canvas.getContext('2d',{alpha:true}); let centerImage=null;
 function degToRad(d){return d*Math.PI/180}
-function setFont(){ ctx.font = `${E.fontWeight.value} ${E.fontSize.value}px ${E.fontFamily.value}`; ctx.textBaseline = 'middle'; ctx.textAlign='center'; }
-function drawRing(r, color, width, alpha=1){ if(width<=0) return; ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.arc(500,500,r,0,Math.PI*2); ctx.stroke(); ctx.restore(); }
-function drawCenterImage(){ if(!centerImage) return; const size=+E.centerSize.value; const x=500-size/2, y=500-size/2; ctx.drawImage(centerImage, x, y, size, size); }
-
-function drawChecker(){ if(!E.showChecker.checked) return; const s=20; for(let y=0;y<1000;y+=s){for(let x=0;x<1000;x+=s){ctx.fillStyle=((x/s+y/s)%2)?'#e5e7eb':'#f3f4f6'; ctx.fillRect(x,y,s,s);}} }
-
-// Circular text draw
-function drawCircularText(text, radius, startDeg, sweepDeg, clockwise, fill, stroke, sw, letterSpace){
-  if(!text) return;
-  setFont();
-  const chars = [...text];
-  const advances = chars.map(ch => ctx.measureText(ch).width + letterSpace);
-  const totalAdvance = advances.reduce((a,b)=>a+b,0) || 1;
-  const arcLen = Math.min(Math.abs(sweepDeg), 359.9) * Math.PI/180 * radius;
-  const scale = arcLen / totalAdvance;
-  const dir = clockwise ? 1 : -1;
-  const sweep = Math.min(Math.abs(sweepDeg), 359.9) * dir;
-  let angleStart = startDeg - (sweep/2);
-  let theta = degToRad(angleStart);
-  const arcPerUnit = (degToRad(Math.abs(sweep))/totalAdvance) * dir;
+function setFont(size,weight,family){ctx.font=`${weight} ${size}px ${family}`;ctx.textBaseline='middle';ctx.textAlign='center'}
+function drawRing(r,c,w,a=1){if(w<=0)return;ctx.save();ctx.globalAlpha=a;ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.arc(500,500,r,0,Math.PI*2);ctx.stroke();ctx.restore()}
+function drawChecker(){if(!E.showChecker.checked)return;const s=20;for(let y=0;y<1000;y+=s){for(let x=0;x<1000;x+=s){ctx.fillStyle=((x/s+y/s)%2)?'#e5e7eb':'#f3f4f6';ctx.fillRect(x,y,s,s)}}}
+function applyCase(s,m){if(m==='upper')return s.toUpperCase();if(m==='lower')return s.toLowerCase();return s}
+function drawCircularTextAdvanced(text,opt){
+  if(!text)return; text=applyCase(text,opt.caseMode||'keep');
+  setFont(opt.size,opt.weight,opt.family);
+  ctx.lineJoin=E.strokeJoin.value; ctx.miterLimit=+E.miterLimit.value;
+  const chars=[...text];
+  const advances=chars.map(ch=>Math.max(0, ctx.measureText(ch).width*opt.scaleX + (ch===' '?opt.wordSpace:0) + opt.letterSpace));
+  const total=advances.reduce((a,b)=>a+b,0)||1;
+  const arcLen=Math.min(Math.abs(opt.sweep),359.9)*Math.PI/180*opt.radius;
+  const scale=(opt.fit==='fit')?(arcLen/total):1.0;
+  const dir=opt.clockwise?1:-1;
+  const sweepRad=degToRad(Math.min(Math.abs(opt.sweep),359.9))*dir;
+  let theta=degToRad(opt.start - (opt.sweep/2));
+  const arcPerUnit=sweepRad/total;
   ctx.save(); ctx.translate(500,500);
   for(let i=0;i<chars.length;i++){
-    const adv = advances[i] * scale;
-    const aMid = theta + arcPerUnit*adv/2;
-    const x = Math.cos(aMid)*radius;
-    const y = Math.sin(aMid)*radius;
-    ctx.save(); ctx.translate(x,y); ctx.rotate(aMid + (clockwise?Math.PI/2:-Math.PI/2));
-    if(sw>0){ ctx.lineWidth = sw; ctx.strokeStyle = stroke; ctx.strokeText(chars[i], 0,0); }
-    ctx.fillStyle = fill; ctx.fillText(chars[i], 0,0); ctx.restore();
-    theta += arcPerUnit*adv;
+    const adv=advances[i]*scale;
+    const aMid=theta+arcPerUnit*adv/2;
+    const x=Math.cos(aMid)*opt.radius, y=Math.sin(aMid)*opt.radius;
+    ctx.save(); ctx.translate(x,y);
+    let rot=aMid + (opt.clockwise?Math.PI/2:-Math.PI/2);
+    if(opt.upright){
+      let norm=((rot+Math.PI)%(2*Math.PI))-Math.PI;
+      if(norm>Math.PI/2)rot-=Math.PI;
+      if(norm<-Math.PI/2)rot+=Math.PI;
+    }
+    ctx.rotate(rot);
+    const skew=Math.tan(degToRad(opt.skew));
+    ctx.transform(opt.scaleX,0,skew,1,0,0);
+    if(opt.strokeWidth>0){ctx.lineWidth=opt.strokeWidth;ctx.strokeStyle=opt.stroke;ctx.strokeText(chars[i],0,0)}
+    ctx.fillStyle=opt.fill; ctx.fillText(chars[i],0,0);
+    ctx.restore();
+    theta+=arcPerUnit*adv;
   }
   ctx.restore();
 }
-
-// Render
-function render(){
-  E.chipSize.textContent = `${E.pxSize.value} px • ${E.dpi.value} DPI`;
-  E.previewLabelBox.textContent = E.previewLabel.value || 'Vorschau';
-  E.previewLabelBox.style.display = E.showLabel.checked ? 'block' : 'none';
-  E.previewLabelBox.classList.remove('pos-tr','pos-tl','pos-br','pos-bl');
-  E.previewLabelBox.classList.add('pos-'+E.labelPos.value);
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawChecker();
-  drawRing(450, E.outerC.value, +E.outerW.value, 1);
-  drawRing(+E.innerR.value, '#111827', 2, (+E.innerO.value)/100);
-  drawRing(+E.coreR.value, '#111827', 2, (+E.coreO.value)/100);
-  const start = +E.startAngle.value; const sweep = +E.sweep.value; const ls = +E.letterSpace.value;
-  drawCircularText(E.text1.value.trim(), +E.r1.value, start, sweep, E.dir1.value==='cw', E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
-  drawCircularText(E.text2.value.trim(), +E.r2.value, start, sweep, E.dir2.value==='cw', E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
-  drawCircularText(E.text3.value.trim(), +E.r3.value, start, sweep, true, E.fillColor.value, E.strokeColor.value, +E.strokeWidth.value, ls);
-  drawCenterImage();
+function processAdjustments(){
+  const g=+E.adj_gamma.value,s=+E.adj_sat.value,c=+E.adj_con.value,b=+E.adj_bri.value;
+  const img=ctx.getImageData(0,0,1000,1000),d=img.data; const wlR=0.2126,wlG=0.7152,wlB=0.0722;
+  for(let i=0;i<d.length;i+=4){
+    let r=d[i]/255,gr=d[i+1]/255,bl=d[i+2]/255;
+    r=Math.pow(r,2.2/g); gr=Math.pow(gr,2.2/g); bl=Math.pow(bl,2.2/g);
+    const lum=r*wlR+gr*wlG+bl*wlB;
+    r=lum+(r-lum)*s; gr=lum+(gr-lum)*s; bl=lum+(bl-lum)*s;
+    r=(r-0.5)*c+0.5; gr=(gr-0.5)*c+0.5; bl=(bl-0.5)*c+0.5;
+    r*=b; gr*=b; bl*=b;
+    d[i]=Math.max(0,Math.min(255,Math.round(r*255)));
+    d[i+1]=Math.max(0,Math.min(255,Math.round(gr*255)));
+    d[i+2]=Math.max(0,Math.min(255,Math.round(bl*255)));
+  }
+  ctx.putImageData(img,0,0);
 }
-
-// Export PNG with DPI chunk
-function u32(n){return new Uint8Array([(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]);}
-function crc32(buf){let c=0xffffffff;for(let n=0;n<buf.length;n++){c^=buf[n];for(let k=0;k<8;k++){c=(c>>>1) ^ (0xedb88320 & -(c & 1));}}return (c^0xffffffff)>>>0;}
+function render(){
+  E.chipSize.textContent=`${E.pxSize.value} px • ${E.dpi.value} DPI`;
+  E.previewLabelBox.textContent=E.previewLabel.value||'Vorschau';
+  E.previewLabelBox.style.display=E.showLabel.checked?'block':'none';
+  E.previewLabelBox.className='preview-label pos-'+E.labelPos.value;
+  ctx.clearRect(0,0,1000,1000); drawChecker();
+  drawRing(450,E.outerC.value,+E.outerW.value,1);
+  drawRing(+E.innerR.value,'#111827',2,(+E.innerO.value)/100);
+  drawRing(+E.coreR.value,'#111827',2,(+E.coreO.value)/100);
+  const start=+E.startAngle.value, sweep=+E.sweep.value;
+  const o1={radius:+E.r1.value,clockwise:E.dir1.value==='cw',fill:E.t1_fill.value,stroke:E.t1_stroke.value,strokeWidth:+E.t1_sw.value,letterSpace:+E.t1_ls.value,wordSpace:+E.t1_ws.value,scaleX:+E.t1_sx.value/100,skew:+E.t1_skew.value,upright:E.t1_upright.checked,size:+E.t1_fs.value,weight:E.t1_fw.value,family:E.t1_ff.value,fit:E.t1_fit.value,caseMode:E.t1_case.value,start:start+(+E.t1_off.value),sweep};
+  const o2={radius:+E.r2.value,clockwise:E.dir2.value==='cw',fill:E.t2_fill.value,stroke:E.t2_stroke.value,strokeWidth:+E.t2_sw.value,letterSpace:+E.t2_ls.value,wordSpace:+E.t2_ws.value,scaleX:+E.t2_sx.value/100,skew:+E.t2_skew.value,upright:E.t2_upright.checked,size:+E.t2_fs.value,weight:E.t2_fw.value,family:E.t2_ff.value,fit:E.t2_fit.value,caseMode:E.t2_case.value,start:start+(+E.t2_off.value),sweep};
+  const o3={radius:+E.r3.value,clockwise:true,fill:E.t3_fill.value,stroke:E.t3_stroke.value,strokeWidth:+E.t3_sw.value,letterSpace:+E.t3_ls.value,wordSpace:+E.t3_ws.value,scaleX:+E.t3_sx.value/100,skew:+E.t3_skew.value,upright:E.t3_upright.checked,size:+E.t3_fs.value,weight:E.t3_fw.value,family:E.t3_ff.value,fit:E.t3_fit.value,caseMode:E.t3_case.value,start:start+(+E.t3_off.value),sweep};
+  drawCircularTextAdvanced(E.text1.value.trim(),o1);
+  drawCircularTextAdvanced(E.text2.value.trim(),o2);
+  drawCircularTextAdvanced(E.text3.value.trim(),o3);
+  if(centerImage){const s=+E.centerSize.value;ctx.drawImage(centerImage,500-s/2,500-s/2,s,s)}
+  if(E.previewAdjust.checked)processAdjustments();
+}
+function u32(n){return new Uint8Array([(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255])}
+function crc32(buf){let c=0xffffffff;for(let n=0;n<buf.length;n++){c^=buf[n];for(let k=0;k<8;k++){c=(c>>>1)^(0xedb88320&-(c&1));}}return (c^0xffffffff)>>>0}
 async function exportPNG(){
-  const px = +E.pxSize.value || 4000;
-  const tmp = document.createElement('canvas'); tmp.width=px; tmp.height=px;
-  const tctx = tmp.getContext('2d'); tctx.imageSmoothingQuality='high';
-  tctx.clearRect(0,0,px,px);
-  tctx.drawImage(canvas, 0,0,px,px);
-  const blob = await new Promise(res=>tmp.toBlob(res,'image/png'));
-  const ab=await blob.arrayBuffer(); const u8=new Uint8Array(ab);
-  let insertPos=8, pos=8;
-  while(pos<u8.length){ const len=(u8[pos]<<24)|(u8[pos+1]<<16)|(u8[pos+2]<<8)|(u8[pos+3]); const type=String.fromCharCode(u8[pos+4],u8[pos+5],u8[pos+6],u8[pos+7]); const end=pos+12+len; if(type==='IHDR'){insertPos=end; break;} pos=end; }
-  const dpi=+E.dpi.value; const ppm=Math.round(dpi/0.0254);
-  const data=new Uint8Array(9); data.set(u32(ppm),0); data.set(u32(ppm),4); data[8]=1;
-  const typeBytes=new TextEncoder().encode('pHYs'); const crc=u32(crc32(new Uint8Array([...typeBytes,...data]))); const len=u32(9);
-  const chunk=new Uint8Array([...len,...typeBytes,...data,...crc]);
-  const out=new Uint8Array(u8.length+chunk.length); out.set(u8.slice(0,insertPos),0); out.set(chunk,insertPos); out.set(u8.slice(insertPos),insertPos+chunk.length);
+  const px=+E.pxSize.value||4000;
+  const tmp=document.createElement('canvas'); tmp.width=px; tmp.height=px; const tctx=tmp.getContext('2d');
+  const scale=px/1000; tctx.scale(scale,scale);
+  function ring(r,c,w,a=1){if(w<=0)return;tctx.save();tctx.globalAlpha=a;tctx.strokeStyle=c;tctx.lineWidth=w;tctx.beginPath();tctx.arc(500,500,r,0,Math.PI*2);tctx.stroke();tctx.restore()}
+  ring(450,E.outerC.value,+E.outerW.value,1);
+  ring(+E.innerR.value,'#111827',2,(+E.innerO.value)/100);
+  ring(+E.coreR.value,'#111827',2,(+E.coreO.value)/100);
+  function setFont2(size,weight,family){tctx.font=`${weight} ${size}px ${family}`;tctx.textBaseline='middle';tctx.textAlign='center'}
+  function drawText2(text,opt){
+    if(!text)return;
+    function deg(d){return d*Math.PI/180}
+    function applyCase2(s,m){if(m==='upper')return s.toUpperCase();if(m==='lower')return s.toLowerCase();return s}
+    text=applyCase2(text,opt.caseMode||'keep');
+    setFont2(opt.size,opt.weight,opt.family);
+    tctx.lineJoin=E.strokeJoin.value; tctx.miterLimit=+E.miterLimit.value;
+    const chars=[...text];
+    const advances=chars.map(ch=>tctx.measureText(ch).width*opt.scaleX+(ch===' '?opt.wordSpace:0)+opt.letterSpace);
+    const total=advances.reduce((a,b)=>a+b,0)||1;
+    const arcLen=Math.min(Math.abs(opt.sweep),359.9)*Math.PI/180*opt.radius;
+    const scale=(opt.fit==='fit')?(arcLen/total):1.0;
+    const dir=opt.clockwise?1:-1; const sweepRad=deg(Math.min(Math.abs(opt.sweep),359.9))*dir;
+    let theta=deg(opt.start-(opt.sweep/2)); const arcPerUnit=sweepRad/total;
+    tctx.save(); tctx.translate(500,500);
+    for(let i=0;i<chars.length;i++){
+      const adv=advances[i]*scale; const aMid=theta+arcPerUnit*adv/2;
+      const x=Math.cos(aMid)*opt.radius, y=Math.sin(aMid)*opt.radius;
+      tctx.save(); tctx.translate(x,y);
+      let rot=aMid + (opt.clockwise?Math.PI/2:-Math.PI/2);
+      if(opt.upright){
+        let norm=((rot+Math.PI)%(2*Math.PI))-Math.PI;
+        if(norm>Math.PI/2)rot-=Math.PI;
+        if(norm<-Math.PI/2)rot+=Math.PI;
+      }
+      tctx.rotate(rot);
+      const skew=Math.tan(deg(opt.skew));
+      tctx.transform(opt.scaleX,0,skew,1,0,0);
+      if(opt.strokeWidth>0){tctx.lineWidth=opt.strokeWidth;tctx.strokeStyle=opt.stroke;tctx.strokeText(chars[i],0,0)}
+      tctx.fillStyle=opt.fill; tctx.fillText(chars[i],0,0);
+      tctx.restore(); theta+=arcPerUnit*adv;
+    }
+    tctx.restore();
+  }
+  const start=+E.startAngle.value,sweep=+E.sweep.value;
+  const o1={radius:+E.r1.value,clockwise:E.dir1.value==='cw',fill:E.t1_fill.value,stroke:E.t1_stroke.value,strokeWidth:+E.t1_sw.value,letterSpace:+E.t1_ls.value,wordSpace:+E.t1_ws.value,scaleX:+E.t1_sx.value/100,skew:+E.t1_skew.value,upright:E.t1_upright.checked,size:+E.t1_fs.value,weight:E.t1_fw.value,family:E.t1_ff.value,fit:E.t1_fit.value,caseMode:E.t1_case.value,start:start+(+E.t1_off.value),sweep};
+  const o2={radius:+E.r2.value,clockwise:E.dir2.value==='cw',fill:E.t2_fill.value,stroke:E.t2_stroke.value,strokeWidth:+E.t2_sw.value,letterSpace:+E.t2_ls.value,wordSpace:+E.t2_ws.value,scaleX:+E.t2_sx.value/100,skew:+E.t2_skew.value,upright:E.t2_upright.checked,size:+E.t2_fs.value,weight:E.t2_fw.value,family:E.t2_ff.value,fit:E.t2_fit.value,caseMode:E.t2_case.value,start:start+(+E.t2_off.value),sweep};
+  const o3={radius:+E.r3.value,clockwise:true,fill:E.t3_fill.value,stroke:E.t3_stroke.value,strokeWidth:+E.t3_sw.value,letterSpace:+E.t3_ls.value,wordSpace:+E.t3_ws.value,scaleX:+E.t3_sx.value/100,skew:+E.t3_skew.value,upright:E.t3_upright.checked,size:+E.t3_fs.value,weight:E.t3_fw.value,family:E.t3_ff.value,fit:E.t3_fit.value,caseMode:E.t3_case.value,start:start+(+E.t3_off.value),sweep};
+  drawText2(E.text1.value.trim(),o1); drawText2(E.text2.value.trim(),o2); drawText2(E.text3.value.trim(),o3);
+  if(+E.adj_gamma.value!=1 || +E.adj_sat.value!=1 || +E.adj_con.value!=1 || +E.adj_bri.value!=1){
+    const img=tctx.getImageData(0,0,px,px),d=img.data; const g=+E.adj_gamma.value,s=+E.adj_sat.value,c=+E.adj_con.value,b=+E.adj_bri.value; const wlR=0.2126,wlG=0.7152,wlB=0.0722;
+    for(let i=0;i<d.length;i+=4){
+      let r=d[i]/255,gr=d[i+1]/255,bl=d[i+2]/255;
+      r=Math.pow(r,2.2/g); gr=Math.pow(gr,2.2/g); bl=Math.pow(bl,2.2/g);
+      const lum=r*wlR+gr*wlG+bl*wlB;
+      r=lum+(r-lum)*s; gr=lum+(gr-lum)*s; bl=lum+(bl-lum)*s;
+      r=(r-0.5)*c+0.5; gr=(gr-0.5)*c+0.5; bl=(bl-0.5)*c+0.5;
+      r*=b; gr*=b; bl*=b;
+      d[i]=Math.max(0,Math.min(255,Math.round(r*255)));
+      d[i+1]=Math.max(0,Math.min(255,Math.round(gr*255)));
+      d[i+2]=Math.max(0,Math.min(255,Math.round(bl*255)));
+    }
+    tctx.putImageData(img,0,0);
+  }
+  const blob=await new Promise(res=>tmp.toBlob(res,'image/png')); const ab=await blob.arrayBuffer(); const u8=new Uint8Array(ab);
+  let insertPos=8,pos=8; while(pos<u8.length){const len=(u8[pos]<<24)|(u8[pos+1]<<16)|(u8[pos+2]<<8)|(u8[pos+3]);const type=String.fromCharCode(u8[pos+4],u8[pos+5],u8[pos+6],u8[pos+7]);const end=pos+12+len;if(type=='IHDR'){insertPos=end;break}pos=end}
+  const dpi=+E.dpi.value, ppm=Math.round(dpi/0.0254); const data=new Uint8Array(9); data.set(u32(ppm),0); data.set(u32(ppm),4); data[8]=1;
+  const typeBytes=new TextEncoder().encode('pHYs'); const crc=u32(crc32(new Uint8Array([...typeBytes,...data]))); const length=u32(9);
+  const chunk=new Uint8Array([...length,...typeBytes,...data,...crc]); const out=new Uint8Array(u8.length+chunk.length);
+  out.set(u8.slice(0,insertPos),0); out.set(chunk,insertPos); out.set(u8.slice(insertPos),insertPos+chunk.length);
   const finalBlob=new Blob([out],{type:'image/png'}); const url=URL.createObjectURL(finalBlob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.png'; a.click(); URL.revokeObjectURL(url);
 }
-
-// Export basic SVG (vector text paths, 359.9° bugfix)
 function exportSVG(){
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const start=+E.startAngle.value; const sweep=Math.min(+E.sweep.value,359.9);
-  function pathArc(r, startDeg, sweepDeg, cw){
-    const dir = cw?1:-1; const s=degToRad(startDeg), e=degToRad(startDeg + dir*sweepDeg);
-    const sx = 500 + Math.cos(s)*r, sy=500 + Math.sin(s)*r;
-    const ex = 500 + Math.cos(e)*r, ey=500 + Math.sin(e)*r;
-    const large = sweepDeg>180?1:0; const sf=cw?1:0;
+  function pathArc(r,startDeg,sweepDeg,cw){
+    const dir=cw?1:-1; const s=degToRad(startDeg),e=degToRad(startDeg+dir*sweepDeg);
+    const sx=500+Math.cos(s)*r,sy=500+Math.sin(s)*r, ex=500+Math.cos(e)*r,ey=500+Math.sin(e)*r;
+    const large=sweepDeg>180?1:0; const sf=cw?1:0;
     return `M ${sx} ${sy} A ${r} ${r} 0 ${large} ${sf} ${ex} ${ey}`;
   }
-  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const textStyle = `font-family:${E.fontFamily.value};font-size:${E.fontSize.value}px;font-weight:${E.fontWeight.value};fill:${E.fillColor.value};stroke:${E.strokeColor.value};stroke-width:${E.strokeWidth.value}`;
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="340mm" height="340mm" viewBox="0 0 1000 1000">\n<defs>\n<path id="p1" d="${pathArc(+E.r1.value, start - sweep/2, sweep, E.dir1.value==='cw')}" />\n<path id="p2" d="${pathArc(+E.r2.value, start - sweep/2, sweep, E.dir2.value==='cw')}" />\n<path id="p3" d="${pathArc(+E.r3.value, start - sweep/2, sweep, true)}" />\n</defs>\n<g id="rings">\n<circle cx="500" cy="500" r="450" fill="none" stroke="${E.outerC.value}" stroke-width="${E.outerW.value}"/>\n<circle cx="500" cy="500" r="${E.innerR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.innerO.value)/100}" stroke-width="2"/>\n<circle cx="500" cy="500" r="${E.coreR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.coreO.value)/100}" stroke-width="2"/>\n</g>\n<g id="txt" style="${textStyle}">\n<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p1" startOffset="50%">${esc(E.text1.value)}</textPath></text>\n<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p2" startOffset="50%">${esc(E.text2.value)}</textPath></text>\n<text dominant-baseline="middle" text-anchor="middle"><textPath href="#p3" startOffset="50%">${esc(E.text3.value)}</textPath></text>\n</g>\n</svg>`;
+  function styleFor(i){const ff=E[`t${i}_ff`].value,fw=E[`t${i}_fw`].value,fs=E[`t${i}_fs`].value,fill=E[`t${i}_fill`].value,stroke=E[`t${i}_stroke`].value,sw=E[`t${i}_sw`].value;return `font-family:${ff};font-size:${fs}px;font-weight:${fw};fill:${fill};stroke:${stroke};stroke-width:${sw};stroke-linejoin:${E.strokeJoin.value};miter-limit:${E.miterLimit.value}`}
+  const p1=pathArc(+E.r1.value,start - sweep/2 + (+E.t1_off.value),sweep,E.dir1.value==='cw');
+  const p2=pathArc(+E.r2.value,start - sweep/2 + (+E.t2_off.value),sweep,E.dir2.value==='cw');
+  const p3=pathArc(+E.r3.value,start - sweep/2 + (+E.t3_off.value),sweep,true);
+  const svg=`<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="340mm" height="340mm" viewBox="0 0 1000 1000">
+<defs>
+<path id="p1" d="${p1}"/>
+<path id="p2" d="${p2}"/>
+<path id="p3" d="${p3}"/>
+</defs>
+<g id="rings">
+<circle cx="500" cy="500" r="450" fill="none" stroke="${E.outerC.value}" stroke-width="${E.outerW.value}"/>
+<circle cx="500" cy="500" r="${E.innerR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.innerO.value)/100}" stroke-width="2"/>
+<circle cx="500" cy="500" r="${E.coreR.value}" fill="none" stroke="#111827" stroke-opacity="${(+E.coreO.value)/100}" stroke-width="2"/>
+</g>
+<g id="txt">
+<text style="${styleFor(1)}" dominant-baseline="middle" text-anchor="middle"><textPath href="#p1" startOffset="50%">${esc(E.text1.value)}</textPath></text>
+<text style="${styleFor(2)}" dominant-baseline="middle" text-anchor="middle"><textPath href="#p2" startOffset="50%">${esc(E.text2.value)}</textPath></text>
+<text style="${styleFor(3)}" dominant-baseline="middle" text-anchor="middle"><textPath href="#p3" startOffset="50%">${esc(E.text3.value||'')}</textPath></text>
+</g>
+</svg>`;
   const blob=new Blob([svg],{type:'image/svg+xml'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.svg'; a.click(); URL.revokeObjectURL(url);
 }
-
-// Files, project, events
-E.centerFile.addEventListener('change', async e=>{ const f=e.target.files?.[0]; if(!f) return; const url=URL.createObjectURL(f); const img=new Image(); img.onload=()=>{centerImage=img; render();}; img.src=url; });
-['input','change','keyup'].forEach(ev=>document.addEventListener(ev, e=>{ if(e.target && e.target.id) render(); }, {passive:true}));
-E.btnPNG.addEventListener('click', exportPNG); E.topPNG.addEventListener('click', exportPNG);
-E.btnSVG.addEventListener('click', exportSVG); E.topSVG.addEventListener('click', exportSVG);
-E.btnSaveProject.addEventListener('click',()=>{ const data={ meta:{name:E.projectName.value, ver:'v5.1'}, texts:[E.text1.value,E.text2.value,E.text3.value], radii:[+E.r1.value,+E.r2.value,+E.r3.value], dirs:[E.dir1.value,E.dir2.value], start:+E.startAngle.value, sweep:+E.sweep.value, font:{family:E.fontFamily.value, weight:E.fontWeight.value, size:+E.fontSize.value, space:+E.letterSpace.value, fill:E.fillColor.value, stroke:E.strokeColor.value, sw:+E.strokeWidth.value}, rings:{outerW:+E.outerW.value, outerC:E.outerC.value, innerR:+E.innerR.value, innerO:+E.innerO.value, coreR:+E.coreR.value, coreO:+E.coreO.value}, overlay:{checker:E.showChecker.checked,label:E.showLabel.checked,pos:E.labelPos.value,txt:E.previewLabel.value} }; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(E.projectName.value||'kreislogo')+'.project.json'; a.click(); URL.revokeObjectURL(url); });
+E.centerFile.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const url=URL.createObjectURL(f);const img=new Image();img.onload=()=>{centerImage=img;render()};img.src=url});
+['input','change','keyup'].forEach(ev=>document.addEventListener(ev,e=>{if(e.target&&e.target.id)render()},{passive:true}));
+E.btnPNG.addEventListener('click',exportPNG);E.topPNG.addEventListener('click',exportPNG);
+E.btnSVG.addEventListener('click',exportSVG);E.topSVG.addEventListener('click',exportSVG);
+E.btnSaveProject.addEventListener('click',()=>{const data={meta:{name:E.projectName.value,ver:'v5.2'},start:+E.startAngle.value,sweep:+E.sweep.value,texts:[E.text1.value,E.text2.value,E.text3.value],radii:[+E.r1.value,+E.r2.value,+E.r3.value],dirs:[E.dir1.value,E.dir2.value],t1:{fs:+E.t1_fs.value,fw:E.t1_fw.value,ff:E.t1_ff.value,fill:E.t1_fill.value,stroke:E.t1_stroke.value,sw:+E.t1_sw.value,ls:+E.t1_ls.value,ws:+E.t1_ws.value,off:+E.t1_off.value,sx:+E.t1_sx.value,skew:+E.t1_skew.value,upr:E.t1_upright.checked,fit:E.t1_fit.value,case:E.t1_case.value},t2:{fs:+E.t2_fs.value,fw:E.t2_fw.value,ff:E.t2_ff.value,fill:E.t2_fill.value,stroke:E.t2_stroke.value,sw:+E.t2_sw.value,ls:+E.t2_ls.value,ws:+E.t2_ws.value,off:+E.t2_off.value,sx:+E.t2_sx.value,skew:+E.t2_skew.value,upr:E.t2_upright.checked,fit:E.t2_fit.value,case:E.t2_case.value},t3:{fs:+E.t3_fs.value,fw:E.t3_fw.value,ff:E.t3_ff.value,fill:E.t3_fill.value,stroke:E.t3_stroke.value,sw:+E.t3_sw.value,ls:+E.t3_ls.value,ws:+E.t3_ws.value,off:+E.t3_off.value,sx:+E.t3_sx.value,skew:+E.t3_skew.value,upr:E.t3_upright.checked,fit:E.t3_fit.value,case:E.t3_case.value},rings:{outerW:+E.outerW.value,outerC:E.outerC.value,innerR:+E.innerR.value,innerO:+E.innerO.value,coreR:+E.coreR.value,coreO:+E.coreO.value},overlay:{checker:E.showChecker.checked,label:E.showLabel.checked,pos:E.labelPos.value,txt:E.previewLabel.value},adj:{gamma:+E.adj_gamma.value,sat:+E.adj_sat.value,con:+E.adj_con.value,bri:+E.adj_bri.value,prev:E.previewAdjust.checked},export:{dpi:+E.dpi.value,px:+E.pxSize.value}};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(E.projectName.value||'kreislogo')+'.project.json';a.click();URL.revokeObjectURL(url)});
 E.btnLoadProject.addEventListener('click',()=>E.loadProjectFile.click());
-E.loadProjectFile.addEventListener('change', async e=>{ const f=e.target.files?.[0]; if(!f) return; try{ const p=JSON.parse(await f.text()); [E.text1.value,E.text2.value,E.text3.value]=p.texts||['','','']; [E.r1.value,E.r2.value,E.r3.value]=p.radii||[390,390,260]; E.dir1.value=(p.dirs&&p.dirs[0])||'cw'; E.dir2.value=(p.dirs&&p.dirs[1])||'ccw'; E.startAngle.value=p.start??16; E.sweep.value=p.sweep??360; if(p.font){E.fontFamily.value=p.font.family||E.fontFamily.value;E.fontWeight.value=p.font.weight||E.fontWeight.value;E.fontSize.value=p.font.size||E.fontSize.value;E.letterSpace.value=p.font.space||E.letterSpace.value;E.fillColor.value=p.font.fill||E.fillColor.value;E.strokeColor.value=p.font.stroke||E.strokeColor.value;E.strokeWidth.value=p.font.sw||E.strokeWidth.value;} if(p.rings){E.outerW.value=p.rings.outerW||E.outerW.value;E.outerC.value=p.rings.outerC||E.outerC.value;E.innerR.value=p.rings.innerR||E.innerR.value;E.innerO.value=p.rings.innerO||E.innerO.value;E.coreR.value=p.rings.coreR||E.coreR.value;E.coreO.value=p.rings.coreO||E.coreO.value;} if(p.overlay){E.showChecker.checked=!!p.overlay.checker;E.showLabel.checked=!!p.overlay.label;E.labelPos.value=p.overlay.pos||'tr';E.previewLabel.value=p.overlay.txt||'';} render(); }catch(err){ alert('Projekt konnte nicht geladen werden.'); } });
+E.loadProjectFile.addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());E.projectName.value=p.meta?.name||'Kreislogo';E.startAngle.value=p.start??12;E.sweep.value=p.sweep??360;[E.text1.value,E.text2.value,E.text3.value]=p.texts||['','',''];[E.r1.value,E.r2.value,E.r3.value]=p.radii||[390,390,260];E.dir1.value=(p.dirs&&p.dirs[0])||'cw';E.dir2.value=(p.dirs&&p.dirs[1])||'ccw';const T=['t1','t2','t3'];T.forEach((k,i)=>{const src=p[k]||{};['fs','fw','ff','fill','stroke','sw','ls','ws','off','sx','skew','upr','fit','case'].forEach(prop=>{const el=E[f"{k}_{prop}"]; if(!el) return; if(typeof src[prop]==='boolean')el.checked=src[prop]; else el.value=src[prop]??el.value;});});if(p.rings){E.outerW.value=p.rings.outerW||E.outerW.value;E.outerC.value=p.rings.outerC||E.outerC.value;E.innerR.value=p.rings.innerR||E.innerR.value;E.innerO.value=p.rings.innerO||E.innerO.value;E.coreR.value=p.rings.coreR||E.coreR.value;E.coreO.value=p.rings.coreO||E.coreO.value;}if(p.overlay){E.showChecker.checked=!!p.overlay.checker;E.showLabel.checked=!!p.overlay.label;E.labelPos.value=p.overlay.pos||'tr';E.previewLabel.value=p.overlay.txt||'';}if(p.adj){E.adj_gamma.value=p.adj.gamma||1;E.adj_sat.value=p.adj.sat||1;E.adj_con.value=p.adj.con||1;E.adj_bri.value=p.adj.bri||1;E.previewAdjust.checked=!!p.adj.prev;}if(p.export){E.dpi.value=p.export.dpi||300;E.pxSize.value=p.export.px||4000;}render()}catch(err){alert('Projekt konnte nicht geladen werden.')}});
 E.btnReset.addEventListener('click',()=>location.reload());
-
-// init
 render();
 </script>
 </body>
